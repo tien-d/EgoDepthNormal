@@ -27,7 +27,7 @@ dataset, but also on other popular egocentric datasets, such as First Person Han
 EPIC-KITCHENS.
 
 
-![epick_qualitative.jpg](media/epick_supp_qualitative_small.png)
+![epick_supp_qualitative_small.png](media/epick_supp_qualitative_small.png)
 
 <b>Figure 1: Qualitative results for depth, surface normal, and gravity 
 prediction on EPIC-KITCHENS dataset.</b>
