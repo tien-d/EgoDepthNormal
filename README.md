@@ -33,6 +33,7 @@ EPIC-KITCHENS.
 prediction on EPIC-KITCHENS dataset.</b>
 
 # Installation
+We provide a Docker image with dependencies already set up.  
 
 
 # Egocentric Depth on everyday INdoor Activities (EDINA) Dataset
