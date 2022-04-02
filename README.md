@@ -26,7 +26,6 @@ single-view depth and surface normal estimation significantly outperforms the ba
 dataset, but also on other popular egocentric datasets, such as First Person Hand Action (FPHA) and 
 EPIC-KITCHENS.
 
-
 ![epick_supp_qualitative_small.png](media/epick_supp_qualitative_small.png)
 
 <b>Figure 1: Qualitative results for depth, surface normal, and gravity 
