@@ -7,7 +7,7 @@ Tien Do, Khiem Vuong, and Hyun Soo Park
 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2022  
 [Project webpage](???) | [Dataset](???) | [arXiv](???) 
 
-# Abstract
+## Abstract
 
 In this paper, we study a problem of egocentric scene understanding, i.e., predicting depths and surface normals from an
 egocentric image. Egocentric scene understanding poses unprecedented challenges: (1) due to large head movements, the 
@@ -32,28 +32,27 @@ EPIC-KITCHENS.
 <b>Figure 1: Qualitative results for depth, surface normal, and gravity 
 prediction on EPIC-KITCHENS dataset.</b>
 
-# Installation
-We provide a Docker image with dependencies already set up.  
+## Installation
+:star2: Installation instructions will be available soon!
 
+## Egocentric Depth on everyday INdoor Activities (EDINA) Dataset
+:star2: Dataset is coming soon! 
 
-# Egocentric Depth on everyday INdoor Activities (EDINA) Dataset
-
-### Descriptions
+### Overview
+EDINA is an egocentric dataset that comprises more than 500K synchronized RGBD frames and gravity directions. Each instance in the dataset is a triplet: RGB image, depths and surface normals, and 3D gravity direction.
 
 ![edina2.gif](media/edina2.gif)
 
-<b>Figure 2: EDINA dataset.</b>
+### Capturing Process
+The data were collected using Azure Kinect cameras that provide RGBD images with inertial signals (rotational velocity and linear acceleration). Eighteen participants were asked to perform diverse daily indoor activities, e.g., cleaning, sorting, cooking, eating, doing laundry, training/playing with pet, walking, shopping, vacuuming, making bed, exercising, throwing trash, watering plants, sweeping, wiping, while wearing a head-mounted camera. More information can be found in our main paper and supplementary materials.
 
-Participants, train? test?
-
-Number of frames, train? test?
-
-Links to download.
+### Download
+Coming soon.
 
 ### Organization
+Coming soon.
 
-
-# Citation
+## Citation
 If you find our work to be useful in your research, please consider citing our paper:
 ```
 @InProceedings{Do_2022_EgoSceneMSR,
@@ -65,7 +64,7 @@ If you find our work to be useful in your research, please consider citing our p
 }
 ```
 
-# Contact
+## Contact
 If you have any questions/issues, please create an issue in this repo or contact us at [this email](doxxx104@umn.edu). 
 
 
