@@ -1,6 +1,7 @@
 # Egocentric Scene Understanding via Multimodal Spatial Rectifier
 
 This repository contains the source code for our paper:
+
 **Egocentric Scene Understanding via Multimodal Spatial Rectifier**  
 Tien Do, Khiem Vuong, and Hyun Soo Park  
 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2022  
@@ -17,8 +18,7 @@ prediction on EPIC-KITCHENS dataset.</b>
 
 ## Egocentric Depth on everyday INdoor Activities (EDINA) Dataset
 
-### :star2: EDINA test set is now available to download!
-
+**:star2: EDINA test set is now available to download!**
 
 ### Overview
 EDINA is an egocentric dataset that comprises more than 500K synchronized RGBD frames and gravity directions. Each instance in the dataset is a triplet: RGB image, depths and surface normals, and 3D gravity direction.
