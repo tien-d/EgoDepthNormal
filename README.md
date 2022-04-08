@@ -14,11 +14,11 @@ IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2022
 prediction on EPIC-KITCHENS dataset.</b>
 
 ## Installation
-:star2: Installation instructions will be available soon!
+:star2: Installation instructions will be available soon! :star2:
 
 ## Egocentric Depth on everyday INdoor Activities (EDINA) Dataset
 
-**:star2: EDINA test set is now available to download!**
+**:star2: EDINA test set is now available to download! :star2: **
 
 ### Overview
 EDINA is an egocentric dataset that comprises more than 500K synchronized RGBD frames and gravity directions. Each instance in the dataset is a triplet: RGB image, depths and surface normals, and 3D gravity direction.
@@ -31,10 +31,11 @@ The data were collected using Azure Kinect cameras that provide RGBD images with
 ### Download
 We provide the download links for EDINA dataset below. More information on dataset format can be found in the [Data Organization](#data-organization) section.
 
-#### Training data
+* **Training data**
+
 Coming soon.
 
-#### Testing data
+* **Testing data**
 
 ```
 https://edina.s3.amazonaws.com/scenes_test/scene0015_00.zip
