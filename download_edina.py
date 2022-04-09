@@ -20,7 +20,7 @@ TRAIN_URL_PREFIX = 'scenes_train'
 TEST_URL_PREFIX = 'scenes_test'
 
 
-# Progress bar util. Taken from https://github.com/tqdm/tqdm/blob/master/examples/tqdm_wget.py
+# Progress bar util. Adopted from https://github.com/tqdm/tqdm/blob/master/examples/tqdm_wget.py
 def my_hook(t):
     """Wraps tqdm instance.
     Don't forget to close() or __exit__()
