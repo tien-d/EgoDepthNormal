@@ -7,10 +7,8 @@ Tien Do, Khiem Vuong, and Hyun Soo Park
 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2022  
 [Project webpage](https://tien-d.github.io/egodepthnormal_cvpr22.html) 
 
-[comment]: <> (| [Dataset]&#40;???&#41; | [arXiv]&#40;???&#41; )
-
 ![epick_supp_qualitative_small.png](media/epick_supp_qualitative_small.png)
-<b>Figure: Qualitative results for depth, surface normal, and gravity 
+<b>Qualitative results for depth, surface normal, and gravity 
 prediction on EPIC-KITCHENS dataset.</b>
 
 ## Installation
