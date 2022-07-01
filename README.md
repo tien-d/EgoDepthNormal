@@ -12,7 +12,65 @@ IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2022
 prediction on EPIC-KITCHENS dataset.</b>
 
 ## Installation
-:star2: Demo code and installation instructions will be available soon! :star2:
+
+[//]: # (:star2: Demo code and installation instructions will be available soon! :star2:)
+
+To activate the docker environment, run the following command:
+
+```
+nvidia-docker run -it --rm --ipc=host -v /:/home nvcr.io/nvidia/pytorch:21.12-py3
+```
+
+where `/` is the directory in the local machine (in this case, the root folder), and `/home` is the reflection of that directory in the docker. 
+This has also specified NVIDIA-Docker with PyTorch version 21.12 which is required to ensure the compatibility 
+between the packages used in the code (at the time of submission).
+
+Inside the docker, change the working directory to this repository: 
+```
+cd /home/PATH/TO/THIS/REPO/EgoDepthNormal
+```
+
+## Quick Inference
+Please follow the below steps to extract depth and surface normals from some RGB images using our provided pre-trained model:
+
+1) Make sure you have the following `.ckpt` files inside [`./checkpoints/`](./checkpoints) folder: 
+`edina_depth_baseline.ckpt`, `edina_normal_baseline.ckpt`.
+You can use this command to download these checkpoints:
+
+    ```
+    wget -O edina_depth_baseline.ckpt https://edina.s3.amazonaws.com/xxx.ckpt && mv edina_depth_baseline.ckpt ./checkpoints/
+    
+    wget -O edina_normal_baseline.ckpt https://edina.s3.amazonaws.com/xxx.ckpt && mv edina_normal_baseline.ckpt ./checkpoints/
+    ```
+   
+2) Our demo RGB images are stored in [`demo_data/color`](./demo_data/color)
+   
+4) Run [`demo.sh`](./demo.sh) to extract the results in [`./demo_visualization/`](./demo_visualization).
+
+    ```
+    sh demo.sh
+    ```
+
+## Benchmark Evaluation
+You can evaluate depth/surface normal predictions quantitatively and qualitatively on EDINA dataset using our provided pre-trained models.
+
+Run:
+```
+sh eval.sh
+```
+Specifically, inside the bash script, multiple arguments are needed, e.g. path to dataset/dataset pickle files, path to the pre-trained model, batch size, network architecture, test dataset, etc. Please refer to the actual code for the exact supported arguments options.
+
+For instance, the following sample codeblock can be used to evaluate depth estimation on EDINA test set:
+
+```
+python main_depth.py --train 0 --model_type 'midas_v21' \
+--test_usage 'edina_test' \
+--checkpoint ./edina_depth_baseline.ckpt \
+--dataset_pickle_file ./pickles/scannet_edina_camready_final_clean.pkl \
+--batch_size 8 --skip_every_n_image_test 40 \
+--data_root PATH/TO/EDINA/DATA \
+--save_visualization ./eval_visualization/depth_results
+```
 
 ## Egocentric Depth on everyday INdoor Activities (EDINA) Dataset
 
