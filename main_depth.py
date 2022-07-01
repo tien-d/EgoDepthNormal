@@ -28,6 +28,8 @@ import depth_utils
 
 def ParseCmdLineArguments():
     parser = argparse.ArgumentParser(description='MARS CNN Script')
+    parser.add_argument('--data_root', type=str,
+                        help='Location of the dataset.')
     parser.add_argument('--checkpoint', type=str,
                         help='Location of the checkpoint to evaluate.')
     parser.add_argument('--train', type=int, default=1,
@@ -139,7 +141,8 @@ class RunDepthEstimation(network_run.DefaultImageNetwork):
             out_img = np.concatenate(out_img_l1, axis=1)
 
             image = Image.fromarray(out_img.astype(np.uint8))
-            image.save(os.path.join(output_path, 'viz_{0:06d}.png'.format(self.save_idx)))
+            original_filename, original_ext = os.path.splitext(os.path.basename(input_batch['image-name'][i]))
+            image.save(os.path.join(output_path, 'viz_{0}_{1:06d}.png'.format(original_filename, self.save_idx)))
 
             self.save_idx += 1
 
@@ -201,12 +204,6 @@ class RunDepthEstimation(network_run.DefaultImageNetwork):
             depths_pred = prediction.clone()
             depths_pred[depths_pred < disparity_cap] = disparity_cap
             depths_pred = 1.0 / depths_pred
-        elif output_type == 'invdepth_avgscale':
-            scale, shift = 0.05286243, 0.61732054
-            prediction_aligned = scale * prediction + shift
-            disparity_cap = 1.0 / 10.0
-            prediction_aligned[prediction_aligned < disparity_cap] = disparity_cap
-            depths_pred = 1.0 / prediction_aligned
         elif output_type == 'invdepth_gtscale':
             # scale with gt_depth
             input_batch = self._get_network_augmented_input(network_output)
@@ -224,17 +221,6 @@ class RunDepthEstimation(network_run.DefaultImageNetwork):
             prediction_aligned[prediction_aligned < disparity_cap] = disparity_cap
 
             depths_pred = 1.0 / prediction_aligned
-        elif output_type == 'invdepth_arbscale':
-            depths_pred = prediction.clone()
-            valid_mask = depths_pred > 1e-6  # prevent numerical issue
-            # invert depth output
-            depths_pred[valid_mask] = 1.0 / depths_pred[valid_mask]
-            depths_pred[~valid_mask] = 0.0
-            # scale to max 3m
-            for i in range(depths_pred.shape[0]):
-                scale = 3.0 / torch.max(depths_pred[i])
-                depths_pred[i] = depths_pred[i] * scale
-
         elif output_type == 'direct':
             depths_pred = prediction
         else:
@@ -373,17 +359,19 @@ if __name__ == '__main__':
                                      shuffle=False, num_workers=args.dataloader_test_workers,
                                      pin_memory=True)
     else:
-        train_dataset = ScanNetEdinaMultiRectsCropNoResizeDataset(usage=args.train_usage,
-                                                      skip_every_n_image=args.skip_every_n_image_train,
-                                                      dataset_pickle_file=args.dataset_pickle_file,
-                                                      transform=transform,
-                                                      size=(input_h, input_w))
+        train_dataset = ScanNetEdinaMultiRectsCropNoResizeDataset(data_root=args.data_root,
+                                                                  usage=args.train_usage,
+                                                                  skip_every_n_image=args.skip_every_n_image_train,
+                                                                  dataset_pickle_file=args.dataset_pickle_file,
+                                                                  transform=transform,
+                                                                  size=(input_h, input_w))
 
-        test_dataset = ScanNetEdinaMultiRectsCropNoResizeDataset(usage=args.test_usage,
-                                                     dataset_pickle_file=args.dataset_pickle_file,
-                                                     skip_every_n_image=args.skip_every_n_image_test,
-                                                     transform=transform,
-                                                     size=(input_h, input_w))
+        test_dataset = ScanNetEdinaMultiRectsCropNoResizeDataset(data_root=args.data_root,
+                                                                 usage=args.test_usage,
+                                                                 dataset_pickle_file=args.dataset_pickle_file,
+                                                                 skip_every_n_image=args.skip_every_n_image_test,
+                                                                 transform=transform,
+                                                                 size=(input_h, input_w))
 
         train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size,
                                       shuffle=True, num_workers=args.dataloader_train_workers,

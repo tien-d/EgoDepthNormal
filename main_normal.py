@@ -24,6 +24,8 @@ import normal_utils
 
 def ParseCmdLineArguments():
     parser = argparse.ArgumentParser(description='MARS CNN Script')
+    parser.add_argument('--data_root', type=str,
+                        help='Location of the dataset.')
     parser.add_argument('--checkpoint', type=str,
                         help='Location of the checkpoint to evaluate.')
     parser.add_argument('--train', type=int, default=1,
@@ -32,11 +34,6 @@ def ParseCmdLineArguments():
                         help='framenet_train/edina_train/train - all.')
     parser.add_argument('--test_usage', type=str, default='test',
                         help='framenet_train/edina_train/train - all.')
-
-    # parser.add_argument('--train_usages', type=str, nargs='+', default=['train'],
-    #                     help='framenet_train/edina_train/train - all.')
-    # parser.add_argument('--test_usages', type=str, nargs='+', default=['test'],
-    #                     help='framenet_train/edina_train/train - all.')
 
     parser.add_argument('--train_mode', type=str, default='rectified',
                         help='Train modes are standard/rectified/augmentation.')
@@ -60,7 +57,6 @@ def ParseCmdLineArguments():
 
     parser.add_argument('--cluster_index', type=int, default=0)
 
-
     parser.add_argument('--dataloader_test_workers', type=int, default=4)
     parser.add_argument('--dataloader_train_workers', type=int, default=4)
 
@@ -79,12 +75,6 @@ def ParseCmdLineArguments():
                         help='Skip every n image in the test split.')
     parser.add_argument('--skip_every_n_image_train', type=int, default=1,
                         help='Skip every n image in the test split.')
-
-    # parser.add_argument('--skip_every_n_image_test', type=int, nargs='+', default=[20],
-    #                     help='Skip every n image in the test split.')
-    # parser.add_argument('--skip_every_n_image_train', type=int, nargs='+', default=[1],
-    #                     help='Skip every n image in the test split.')
-
 
     parser.add_argument('--resnet_arch', type=int, default=18,
                         help='ResNet architecture for ModifiedFPN (18/34/50/101/152)')
@@ -149,12 +139,18 @@ class RunNormalEstimation(network_run.DefaultImageNetwork):
             out_img = np.concatenate(out_img_l1, axis=1)
 
             image = Image.fromarray(out_img.astype(np.uint8))
-            image.save(os.path.join(output_path, 'viz_{0:06d}.png'.format(self.save_idx)))
+            original_filename, original_ext = os.path.splitext(os.path.basename(input_batch['image-name'][i]))
+            image.save(os.path.join(output_path, 'viz_{0}_{1:06d}.png'.format(original_filename, self.save_idx)))
 
             self.save_idx += 1
 
     def _prepare_data(self, input_batch):
-        input_batch = {data_key: input_batch[data_key].cuda(non_blocking=True) for data_key in input_batch}
+        # input_batch = {data_key: input_batch[data_key].cuda(non_blocking=True) for data_key in input_batch}
+        for data_key in input_batch:
+            if data_key != 'image-name':
+                input_batch[data_key] = input_batch[data_key].cuda(non_blocking=True)
+            else:
+                input_batch[data_key] = input_batch[data_key]
 
         if self.args.train_mode == 'rectified' and 'a_q_g' in input_batch:
             q = input_batch['a_q_g']
@@ -170,7 +166,9 @@ class RunNormalEstimation(network_run.DefaultImageNetwork):
             return input_batch
 
     def _call_cnn(self, input_batch):
-        input_batch = {data_key: input_batch[data_key].cuda(non_blocking=True) for data_key in input_batch}
+        # input_batch = {data_key: input_batch[data_key].cuda(non_blocking=True) for data_key in input_batch}
+        input_batch = self._prepare_data(input_batch)
+
         rgb_image = input_batch['image']
         normals_pred = self.cnn.forward(rgb_image)
 
@@ -296,13 +294,15 @@ if __name__ == '__main__':
                                      shuffle=False, num_workers=args.dataloader_test_workers,
                                      pin_memory=True)
     else:
-        train_dataset = ScanNetEdinaMultiRectsCropNoResizeDataset(usage=args.train_usage,
+        train_dataset = ScanNetEdinaMultiRectsCropNoResizeDataset(data_root=args.data_root,
+                                                                  usage=args.train_usage,
                                                                   skip_every_n_image=args.skip_every_n_image_train,
                                                                   dataset_pickle_file=args.dataset_pickle_file,
                                                                   transform=transform,
                                                                   size=(input_h, input_w))
 
-        test_dataset = ScanNetEdinaMultiRectsCropNoResizeDataset(usage=args.test_usage,
+        test_dataset = ScanNetEdinaMultiRectsCropNoResizeDataset(data_root=args.data_root,
+                                                                 usage=args.test_usage,
                                                                  dataset_pickle_file=args.dataset_pickle_file,
                                                                  skip_every_n_image=args.skip_every_n_image_test,
                                                                  transform=transform,

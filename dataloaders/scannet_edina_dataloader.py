@@ -11,9 +11,10 @@ import os
 
 
 class ScanNetEdinaMultiRectsCropNoResizeDataset(Dataset):
-    def __init__(self, usage='edina_test', skip_every_n_image=1, dataset_pickle_file='./data/scannet_edina.pkl',
+    def __init__(self, data_root, usage='edina_test', skip_every_n_image=1, dataset_pickle_file='./data/scannet_edina.pkl',
                  transform=None, size=(480, 640)):
         super(ScanNetEdinaMultiRectsCropNoResizeDataset, self).__init__()
+        self.data_root = data_root
         self.to_tensor = transforms.ToTensor()
         self.usage = usage
         self.__transform = transform
@@ -27,13 +28,18 @@ class ScanNetEdinaMultiRectsCropNoResizeDataset(Dataset):
         logging.info('Number of frames for the usage {0} is {1}.'.format(usage, self.data_len))
 
     def __getitem__(self, index):
-        # Get image name from the pandas df
+        # Get image name
         color_info = self.data_info['color'][self.idx[index]]
         depth_info = self.data_info['depth'][self.idx[index]]
         # print(index, color_info, depth_info)
         # gravity_info = self.data_info['gravity'][self.idx[index]]
         normal_info = self.data_info['normal'][self.idx[index]]
         # normal_mask_info = self.data_info['normal-mask'][self.idx[index]]
+
+        # Add the new root in
+        color_info = color_info.replace('/mars/mnt/oitstorage/EDINA_pruned', self.data_root)
+        depth_info = depth_info.replace('/mars/mnt/oitstorage/EDINA_pruned', self.data_root)
+        normal_info = normal_info.replace('/mars/mnt/oitstorage/EDINA_pruned', self.data_root)
 
         # Open image
         color_img = Image.open(color_info).convert("RGB")
@@ -119,7 +125,8 @@ class ScanNetEdinaMultiRectsCropNoResizeDataset(Dataset):
                     'normal-mask': torch.Tensor(sample["mask"]),
                     'depth': torch.Tensor(sample["depth"]),
                     'image-original': torch.Tensor(color_img_np),
-                    'normal': normal_tensor}
+                    'normal': normal_tensor,
+                    'image-name': color_info}
 
         else:
             # This is for baseline depth
@@ -127,7 +134,8 @@ class ScanNetEdinaMultiRectsCropNoResizeDataset(Dataset):
                     'normal-mask': torch.Tensor(mask)[None, ...],
                     'depth': (torch.Tensor(np.array(depth_img)) / 1000.0)[None, ...],
                     'image-original': torch.Tensor(color_img_np),
-                    'normal': normal_tensor}
+                    'normal': normal_tensor,
+                    'image-name': color_info}
 
     def __len__(self):
         return self.data_len
