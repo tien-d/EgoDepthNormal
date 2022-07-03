@@ -38,9 +38,9 @@ Please follow the below steps to extract depth and surface normals from some RGB
 You can use this command to download these checkpoints:
 
     ```
-    wget -O edina_depth_baseline.ckpt https://edina.s3.amazonaws.com/xxx.ckpt && mv edina_depth_baseline.ckpt ./checkpoints/
+    wget -O edina_depth_baseline.ckpt https://edina.s3.amazonaws.com/edina_depth_baseline.ckpt && mv edina_depth_baseline.ckpt ./checkpoints/
     
-    wget -O edina_normal_baseline.ckpt https://edina.s3.amazonaws.com/xxx.ckpt && mv edina_normal_baseline.ckpt ./checkpoints/
+    wget -O edina_normal_baseline.ckpt https://edina.s3.amazonaws.com/edina_normal_baseline.ckpt && mv edina_normal_baseline.ckpt ./checkpoints/
     ```
    
 2) Our demo RGB images are stored in [`demo_data/color`](./demo_data/color)
@@ -52,7 +52,8 @@ You can use this command to download these checkpoints:
     ```
 
 ## Benchmark Evaluation
-You can evaluate depth/surface normal predictions quantitatively and qualitatively on EDINA dataset using our provided pre-trained models.
+You can evaluate depth/surface normal predictions quantitatively and qualitatively on EDINA dataset using our provided pre-trained models. Make sure you have the corresponding depth/normal checkpoints inside [`./checkpoints/`](./checkpoints) folder and the dataset split (pickle file) inside [`./pickles/`](./pickles) folder. Please refer to [dataset](README_dataset.md) on how to download the pickle file. 
+
 
 Run:
 ```
@@ -65,7 +66,7 @@ For instance, the following sample codeblock can be used to evaluate depth estim
 ```
 python main_depth.py --train 0 --model_type 'midas_v21' \
 --test_usage 'edina_test' \
---checkpoint ./edina_depth_baseline.ckpt \
+--checkpoint ./checkpoints/edina_depth_baseline.ckpt \
 --dataset_pickle_file ./pickles/scannet_edina_camready_final_clean.pkl \
 --batch_size 8 --skip_every_n_image_test 40 \
 --data_root PATH/TO/EDINA/DATA \
@@ -74,7 +75,7 @@ python main_depth.py --train 0 --model_type 'midas_v21' \
 
 ## Egocentric Depth on everyday INdoor Activities (EDINA) Dataset
 
-**:star2: EDINA test set is now available to download! :star2:**
+**:star2: EDINA data (train + test) set is now available to download! :star2:**
 
 ### Overview
 EDINA is an egocentric dataset that comprises more than 500K synchronized RGBD frames and gravity directions. Each instance in the dataset is a triplet: RGB image, depths and surface normals, and 3D gravity direction.

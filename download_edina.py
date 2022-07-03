@@ -110,11 +110,12 @@ def main():
     parser = argparse.ArgumentParser(description='Downloads EDINA public data release.')
     parser.add_argument('-o', '--out_dir', required=True, help='directory in which to download')
     parser.add_argument('--id', help='specific scan id to download')
+    parser.add_argument('--split', help='download the full train/test set')
     parser.add_argument('--unzip', action='store_true', help='unzip the downloaded zip file or not')
     args = parser.parse_args()
 
-    # TODO: Training data will be released soon. Will be empty for now!
-    release_train_scans = []
+    release_train_file = BASE_URL + '/' + 'scenes_train.txt'
+    release_train_scans = get_release_scans(release_train_file)
 
     release_test_file = BASE_URL + '/' + 'scenes_test.txt'
     release_test_scans = get_release_scans(release_test_file)
@@ -126,20 +127,24 @@ def main():
         scan_id = args.id
         is_test_scan = scan_id in release_test_scans
 
-        # TODO: Training data will be released soon! Only accepting scenes in the test set for now
-        if scan_id not in release_train_scans and (not is_test_scan):
-            raise Exception(f'ERROR: Invalid scan id: {scan_id}. Please double check the ID at {release_test_file}')
+        if (scan_id not in release_train_scans) and (scan_id not in release_test_scans):
+            raise Exception(f'ERROR: Invalid scan id: {scan_id}. Please double check the ID at {release_train_file} and {release_test_file}')
         else:
             print('Downloading scene {}'.format(scan_id))
             out_dir = out_dir_train_scans if not is_test_scan else out_dir_test_scans
-            download_scan(scan_id, out_dir, bucket=TEST_URL_PREFIX, unzip=args.unzip)
+            bucket = TRAIN_URL_PREFIX if not is_test_scan else TEST_URL_PREFIX
+            download_scan(scan_id, out_dir, bucket=bucket, unzip=args.unzip)
     else:
-        # Download training scenes
-        # TODO: Training data will be released soon! Will not download for now
-
-        # Download testing scenes
-        print('Downloading the full test set, with {} scenes: {}'.format(len(release_test_scans), release_test_scans))
-        download_release(release_test_scans, out_dir_test_scans, bucket=TEST_URL_PREFIX, unzip=args.unzip)
+        if args.split == 'train':
+            # Download training scenes
+            print('Downloading the full TRAIN set, with {} scenes: {}'.format(len(release_train_scans), release_train_scans))
+            download_release(release_train_scans, out_dir_train_scans, bucket=TRAIN_URL_PREFIX, unzip=args.unzip)
+        elif args.split == 'test':
+            # Download testing scenes
+            print('Downloading the full TEST set, with {} scenes: {}'.format(len(release_test_scans), release_test_scans))
+            download_release(release_test_scans, out_dir_test_scans, bucket=TEST_URL_PREFIX, unzip=args.unzip)
+        else:
+            raise Exception(f'ERROR: Invalid option: only train/test is accepted')
 
 
 if __name__ == '__main__':
