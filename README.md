@@ -34,13 +34,13 @@ cd /home/PATH/TO/THIS/REPO/EgoDepthNormal
 Please follow the below steps to extract depth and surface normals from some RGB images using our provided pre-trained model:
 
 1) Make sure you have the following `.ckpt` files inside [`./checkpoints/`](./checkpoints) folder: 
-`edina_depth_baseline.ckpt`, `edina_normal_baseline.ckpt`.
+`edina_midas_depth_baseline.ckpt`, `edina_midas_normal_baseline.ckpt`.
 You can use this command to download these checkpoints:
 
     ```
-    wget -O edina_depth_baseline.ckpt https://edina.s3.amazonaws.com/edina_depth_baseline.ckpt && mv edina_depth_baseline.ckpt ./checkpoints/
+    wget -O edina_midas_depth_baseline.ckpt https://edina.s3.amazonaws.com/checkpoints/edina_midas_depth_baseline.ckpt && mv edina_midas_depth_baseline.ckpt ./checkpoints/
     
-    wget -O edina_normal_baseline.ckpt https://edina.s3.amazonaws.com/edina_normal_baseline.ckpt && mv edina_normal_baseline.ckpt ./checkpoints/
+    wget -O edina_midas_normal_baseline.ckpt https://edina.s3.amazonaws.com/checkpoints/edina_midas_normal_baseline.ckpt && mv edina_midas_normal_baseline.ckpt ./checkpoints/
     ```
    
 2) Our demo RGB images are stored in [`demo_data/color`](./demo_data/color)
@@ -66,7 +66,7 @@ For instance, the following sample codeblock can be used to evaluate depth estim
 ```
 python main_depth.py --train 0 --model_type 'midas_v21' \
 --test_usage 'edina_test' \
---checkpoint ./checkpoints/edina_depth_baseline.ckpt \
+--checkpoint ./checkpoints/edina_midas_depth_baseline.ckpt \
 --dataset_pickle_file ./pickles/scannet_edina_camready_final_clean.pkl \
 --batch_size 8 --skip_every_n_image_test 40 \
 --data_root PATH/TO/EDINA/DATA \
