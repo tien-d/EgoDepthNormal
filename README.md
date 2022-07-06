@@ -18,12 +18,11 @@ prediction on EPIC-KITCHENS dataset.</b>
 To activate the docker environment, run the following command:
 
 ```
-nvidia-docker run -it --rm --ipc=host -v /:/home nvcr.io/nvidia/pytorch:21.12-py3
+nvidia-docker run -it --rm --ipc=host -v /:/home vuong067/egodepthnormal:latest
 ```
 
 where `/` is the directory in the local machine (in this case, the root folder), and `/home` is the reflection of that directory in the docker. 
-This has also specified NVIDIA-Docker with PyTorch version 21.12 which is required to ensure the compatibility 
-between the packages used in the code (at the time of submission).
+This docker is built based on NVIDIA-Docker with PyTorch version 21.12 with a few additional common packages (e.g., timm).
 
 Inside the docker, change the working directory to this repository: 
 ```
